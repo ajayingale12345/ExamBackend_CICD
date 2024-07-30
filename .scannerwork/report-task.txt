@@ -1,0 +1,6 @@
+projectKey=26021_ExamPortal:master
+serverUrl=http://localhost:9000
+serverVersion=7.9.1.27448
+dashboardUrl=http://localhost:9000/dashboard?id=26021_ExamPortal%3Amaster
+ceTaskId=AY3A9eNyfQk7cjKVzRZO
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AY3A9eNyfQk7cjKVzRZO
