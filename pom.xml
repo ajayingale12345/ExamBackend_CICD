@@ -23,7 +23,7 @@
         <repository>
             <id>github</id>
             <name>GitHub OWNER Apache Maven Packages</name>
-             <url>https://maven.pkg.github.com/ajayingale12345/Exambackend_CICD</url>
+             <url>https://maven.pkg.github.com/ajayingale12345/ExamBackend_CICD</url>
        </repository>
 </distributionManagement>
 	<dependencies>
