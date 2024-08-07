@@ -128,20 +128,15 @@ jobs:
       - name: Create and Append Data to a File
         run: |
           cat <<EOT >>convert_trivy_report.js
-          import { readFileSync, writeFileSync } from 'fs';
-          import json2html from 'json2html';
-
-           
-            const trivyReport = JSON.parse(readFileSync('trivy-report.json'));
-
-              
-              const trivyReportHtml = json2html(trivyReport);
-
- 
-              writeFileSync('trivy-report.html', trivyReportHtml);
-
-              console.log("Trivy report converted to HTML successfully.");
-
+          const fs = require('fs');
+          const json2html = require('json2html');
+          
+          const trivyReport = JSON.parse(fs.readFileSync('trivy-report.json'));
+          const trivyReportHtml = json2html.transform(trivyReport);
+          
+          fs.writeFileSync('trivy-report.html', trivyReportHtml);
+          console.log("Trivy report converted to HTML successfully.");
+          EOT
       - name: Convert Trivy Report to HTML
         run: node convert_trivy_report.js
       - name: Upload Trivy HTML Report
