@@ -122,10 +122,14 @@ jobs:
        with:
           name: trivy-scan-report
           path: trivy-report.json
-     - name: Install trivy-html-reporter
-       run: npm install -g trivy-html-reporter
+     - name: Set up Node.js
+       uses: actions/setup-node@v2
+       with:
+          node-version: '14'
+     - name: Install dependencies
+       run: npm install json2html
      - name: Convert Trivy Report to HTML
-       run: trivy-html-reporter -i trivy-report.json -o trivy-report.html
+       run: node scripts/convert_trivy_report.js
      - name: Upload Trivy HTML Report
        uses: actions/upload-artifact@v2
        with:
