@@ -128,22 +128,19 @@ jobs:
       - name: Create and Append Data to a File
         run: |
           cat <<EOT >>convert_trivy_report.mjs
-          import json
-          from json2html import *
-          import sys
+          import { readFileSync, writeFileSync } from 'fs';
+          import { json2html } from 'json2html';
 
-          # Load Trivy JSON report
-          with open('trivy-report.json', 'r') as f:
-              trivy_report = json.load(f)
+          // Load Trivy JSON report
+          const trivyReport = JSON.parse(readFileSync('trivy-report.json'));
 
-          # Convert to HTML
-          trivy_report_html = json2html.convert(json=trivy_report)
+          // Convert to HTML
+          const trivyReportHtml = json2html(trivyReport);
 
-          # Write HTML report to file
-          with open('trivy-report.html', 'w') as f:
-              f.write(trivy_report_html)
+          // Write HTML report to file
+          writeFileSync('trivy-report.html', trivyReportHtml);
 
-          print("Trivy report converted to HTML successfully.")
+          console.log("Trivy report converted to HTML successfully.");
           EOT
       - name: Convert Trivy Report to HTML
         run: node convert_trivy_report.mjs
