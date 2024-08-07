@@ -127,23 +127,23 @@ jobs:
         run: npm install json2html
       - name: Create and Append Data to a File
         run: |
-          cat <<EOT >>convert_trivy_report.mjs
+          cat <<EOT >>convert_trivy_report.js
           import { readFileSync, writeFileSync } from 'fs';
-          import { json2html } from 'json2html';
+          import json2html from 'json2html';
 
-          // Load Trivy JSON report
-          const trivyReport = JSON.parse(readFileSync('trivy-report.json'));
+           
+            const trivyReport = JSON.parse(readFileSync('trivy-report.json'));
 
-          // Convert to HTML
-          const trivyReportHtml = json2html(trivyReport);
+              
+              const trivyReportHtml = json2html(trivyReport);
 
-          // Write HTML report to file
-          writeFileSync('trivy-report.html', trivyReportHtml);
+ 
+              writeFileSync('trivy-report.html', trivyReportHtml);
 
-          console.log("Trivy report converted to HTML successfully.");
-          EOT
+              console.log("Trivy report converted to HTML successfully.");
+
       - name: Convert Trivy Report to HTML
-        run: node convert_trivy_report.mjs
+        run: node convert_trivy_report.js
       - name: Upload Trivy HTML Report
         uses: actions/upload-artifact@v2
         with:
