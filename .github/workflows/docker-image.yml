@@ -125,17 +125,97 @@ jobs:
           node-version: '14'
       - name: Install dependencies
         run: npm install json2html
+    
       - name: Create and Append Data to a File
         run: |
-          cat <<EOT >>convert_trivy_report.js
+          cat <<EOT >> convert_trivy_report.js
           const fs = require('fs');
-          const json2html = require('json2html');
-          
-          const trivyReport = JSON.parse(fs.readFileSync('trivy-report.json'));
-          const trivyReportHtml = json2html.transform(trivyReport);
-          
-          fs.writeFileSync('trivy-report.html', trivyReportHtml);
-          console.log("Trivy report converted to HTML successfully.");
+
+          // Read the JSON file
+          const jsonData = JSON.parse(fs.readFileSync('trivy-report.json', 'utf8'));
+
+          // Create HTML content
+          let htmlContent = \`
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Vulnerabilities Report</title>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                margin: 20px;
+              }
+              table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+              }
+              table, th, td {
+                border: 1px solid #ddd;
+              }
+              th, td {
+                padding: 8px;
+                text-align: left;
+              }
+              th {
+                background-color: #f4f4f4;
+              }
+              .section-title {
+                margin-top: 20px;
+                font-size: 1.2em;
+                font-weight: bold;
+              }
+              .description {
+                margin-top: 10px;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+              }
+              .references a {
+                display: block;
+                margin: 5px 0;
+                color: #0066cc;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>Vulnerabilities Report</h1>
+          \`;
+
+          jsonData.Vulnerabilities.forEach(vuln => {
+            htmlContent += \`
+            <div class="vulnerability">
+              <div class="section-title">\${vuln.Title}</div>
+              <div class="description">
+                <p><strong>Description:</strong> \${vuln.Description}</p>
+                <p><strong>Severity:</strong> \${vuln.Severity}</p>
+                <p><strong>CVSS V2 Score:</strong> \${vuln.CVSS.nvd.V2Score}</p>
+                <p><strong>CVSS V3 Score:</strong> \${vuln.CVSS.nvd.V3Score}</p>
+                <p><strong>Published Date:</strong> \${new Date(vuln.PublishedDate).toLocaleDateString()}</p>
+                <p><strong>Last Modified Date:</strong> \${new Date(vuln.LastModifiedDate).toLocaleDateString()}</p>
+                <p><strong>Package:</strong> \${vuln.PkgName} (\${vuln.InstalledVersion} → \${vuln.FixedVersion})</p>
+                <p><strong>Primary URL:</strong> <a href="\${vuln.PrimaryURL}" target="_blank">\${vuln.PrimaryURL}</a></p>
+              </div>
+              <div class="references">
+                <strong>References:</strong>
+                \${vuln.References.map(ref => \`<a href="\${ref}" target="_blank">\${ref}</a>\`).join('\n')}
+              </div>
+            </div>
+            \`;
+          });
+
+          htmlContent += \`
+          </body>
+          </html>
+          \`;
+
+          // Write HTML content to a file
+          fs.writeFileSync('trivy-report.html', htmlContent, 'utf8');
+
+          console.log('HTML report generated successfully.');
           EOT
       - name: Convert Trivy Report to HTML
         run: node convert_trivy_report.js
