@@ -127,7 +127,7 @@ jobs:
         run: npm install json2html
       - name: Create and Append Data to a File
         run: |
-          cat <<EOT >>convert_trivy_report.js
+          cat <<EOT >>convert_trivy_report.mjs
           import json
           from json2html import *
           import sys
@@ -146,7 +146,7 @@ jobs:
           print("Trivy report converted to HTML successfully.")
           EOT
       - name: Convert Trivy Report to HTML
-        run: node convert_trivy_report.js
+        run: node convert_trivy_report.mjs
       - name: Upload Trivy HTML Report
         uses: actions/upload-artifact@v2
         with:
