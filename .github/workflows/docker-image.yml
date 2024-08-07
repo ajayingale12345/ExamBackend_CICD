@@ -80,7 +80,7 @@ jobs:
     - name: Run Gitleaks to scan for secrets
       uses: zricethezav/gitleaks-action@v1.3.0
       with:
-        args: "--path=."
+        args: "--path=./ExamBackend_CICD/src"
 
     - name: Upload Gitleaks report
       uses: actions/upload-artifact@v2
