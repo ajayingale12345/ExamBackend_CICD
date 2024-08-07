@@ -122,6 +122,15 @@ jobs:
        with:
           name: trivy-scan-report
           path: trivy-report.json
+     - name: Install trivy-html-reporter
+       run: npm install -g trivy-html-reporter
+     - name: Convert Trivy Report to HTML
+       run: trivy-html-reporter -i trivy-report.json -o trivy-report.html
+     - name: Upload Trivy HTML Report
+       uses: actions/upload-artifact@v2
+       with:
+          name: trivy-report
+          path: trivy-report.html
      - name: List directory contents for debugging
        run: ls -alh
     
